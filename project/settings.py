@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework_simplejwt',
     'django_extensions',
+    
+    'user.apps.UserConfig',
+    'stock_price_tracking.apps.StockPriceTrackingConfig',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
