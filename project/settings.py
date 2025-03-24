@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     
     'user.apps.UserConfig',
     'stock_price_tracking.apps.StockPriceTrackingConfig',
+    'django_crontab',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -154,7 +155,8 @@ REST_FRAMEWORK = {
     ],
     'EXCEPTION_HANDLER': 'ramailo.error_handling.custom_exception_handler',
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTStatelessUserAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTStatelessUserAuthentication',
+         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
 
@@ -262,6 +264,13 @@ LOGGING = {
             'propagate': True,
         },
 
+        'stock_price_tracking': {  # Adjust this to your app's name
+            'handlers': ['file'],
+            'level': 'DEBUG',  # You can adjust the log level here as well
+            'propagate': True,
+        },
+
+
         #database query logger
         # 'django.db.backends': {
         #     'level': 'DEBUG',
@@ -298,7 +307,7 @@ AWS_DEFAULT_ACL = None
 AWS_S3_VERIFY = True
 
 # aws ses
-EMAIL_BACKEND = 'django_ses.SESBackend'
+# EMAIL_BACKEND = 'django_ses.SESBackend'
 AWS_SES_REGION_NAME = os.environ.get("AWS_SES_REGION_NAME")
 AWS_SES_EMAIL = os.environ.get("AWS_SES_EMAIL")
 
@@ -310,3 +319,28 @@ TESTERS = ["9975319000", "8864208000"]
 
 # Name matching threshold
 NAME_MATCH_THRESHOLD = 70.0
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.gmail.com'  # For Gmail
+EMAIL_PORT = 587  # TLS port
+EMAIL_USE_TLS = True  # Use TLS (recommended for security)
+
+# Authentication details
+EMAIL_HOST_USER = 'dreamhigh.bibek@gmail.com'  # Replace with your Gmail address
+EMAIL_HOST_PASSWORD = "fets uwjm sint angi" # Replace with your Gmail password (or app password)
+
+# Default "From" address
+DEFAULT_FROM_EMAIL = 'dreamhigh.bibek@gmail.com' 
+
+
+
+
+CRONJOBS = [
+    ('*/15 * * * *', 'stock_price_tracking.management.commands.fetch_stock_prices'),
+]
+# CRONJOBS = [
+#     ('*/1 * * * *', 'source /Users/bibek/Desktop/work/django-starter/venv/bin/activate && export DJANGO_SETTINGS_MODULE=django_starter.settings && /Users/bibek/Desktop/work/django-starter/venv/bin/python /Users/bibek/Desktop/work/django-starter/manage.py fetch_stock_prices >> /Users/bibek/Desktop/work/django-starter/logs.log 2>&1'),
+# ]
+
