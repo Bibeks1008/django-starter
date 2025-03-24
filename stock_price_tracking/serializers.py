@@ -7,7 +7,7 @@ class CompanySerializer(serializers.ModelSerializer):
         fields = ['name', 'stock_symbol']
 
 class StockTrackingSerializer(serializers.ModelSerializer):
-    company = CompanySerializer()  # Nested serializer for company
+    company = CompanySerializer()  
 
     class Meta:
         model = StockTracking
@@ -15,10 +15,10 @@ class StockTrackingSerializer(serializers.ModelSerializer):
         read_only_fields = ['user']
 
     def create(self, validated_data):
-        company_data = validated_data.pop('company')  # Extract company data
+        company_data = validated_data.pop('company')  
         user = self.context['user']
-        company, created = Company.objects.get_or_create(**company_data)  # Get or create company
+        company, created = Company.objects.get_or_create(**company_data)  
 
-        # Create the stock tracking entry
+       
         stock_tracking = StockTracking.objects.create(company=company, user=user, **validated_data)
         return stock_tracking

@@ -18,11 +18,11 @@ class StockTracking(models.Model):
     price_decrease_trigger = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
-    # You can add fields for the last notified date to avoid sending notifications multiple times
+    
     last_notified = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.user.email} tracks {self.company.name}"
 
     class Meta:
-        unique_together = ('user', 'company')  # A user can only track a company once.
+        unique_together = ('user', 'company')  
