@@ -48,4 +48,5 @@ services:
     environment:
       REDIS_PASSWORD: 123
       REDIS_DATABASES: 1
+    command: ["redis-server", "--requirepass", "123"]
     restart: always
