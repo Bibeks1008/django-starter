@@ -2,6 +2,10 @@
 
 Below are the details for using each API endpoint in the project, including the expected input, request format, and response.
 
+## Swagger Doc:
+
+**Endpoint:** "/swagger"
+
 ## 1. User Registration
 
 **Endpoint:** POST "/users/register"
