@@ -11,7 +11,6 @@ logger = logging.getLogger(__name__)
 
 class Command(BaseCommand):
     help = 'Fetch stock prices every 15 minutes and notify users if triggers are met'
-    print("Starting the fetch_stock_prices command...")
 
     def handle(self, *args, **kwargs):
         stock_accessor = StockAccessor()
@@ -35,7 +34,7 @@ class Command(BaseCommand):
                     if tracking.price_decrease_trigger and stock_price <= tracking.price_decrease_trigger:
                         self.send_alert(tracking, stock_price, 'decrease')
 
-        print("Finished the fetch_stock_prices command.")
+
 
     def send_alert(self, tracking, stock_price, trigger_type):
         

@@ -7,7 +7,7 @@ class UserService:
     def create_user(user_data):
         serializer = UserSerializer(data=user_data)
         if not serializer.is_valid():
-            return None, serializer.errors
+            return {}, serializer.errors
 
         
         password = serializer.validated_data['password']
@@ -15,4 +15,4 @@ class UserService:
 
       
         user = serializer.save()
-        return user, None  
+        return user, {} 

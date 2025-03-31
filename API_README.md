@@ -32,6 +32,22 @@ Below are the details for using each API endpoint in the project, including the 
 }
 ```
 
+If we register without email:
+```json
+{
+	"status_code": 400,
+	"type": "validation_error",
+	"params": [
+		"email"
+	],
+	"messages": [
+		[
+			"This field is required."
+		]
+	]
+}
+```
+
 ## 2. User Login
 
 **Endpoint:** POST "/token"
@@ -123,6 +139,20 @@ Authorization: Bearer your-auth-token
     "price_increase_trigger": "240.00",
     "price_decrease_trigger": "200.00"
   }
+}
+```
+
+If we do not provide stock symbol, the response will be: 
+```json
+{
+	"message": "Invalid data",
+	"errors": {
+		"company": {
+			"stock_symbol": [
+				"This field is required."
+			]
+		}
+	}
 }
 ```
 

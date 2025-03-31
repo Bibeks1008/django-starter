@@ -14,18 +14,17 @@ from .accessor import StockAccessor
 from ramailo.builders.response_builder import ResponseBuilder
 from .stock_price_service import StockTrackingService
 from .serializers import StockTrackingSerializer
+from stock_price_tracking.openapi.schema import STOCK_LIST_RESPONSE
 
 # Create your views here.
 class StockView(APIView):
 
-  @swagger_auto_schema(
-        operation_description="Fetches stock price list", 
-        responses={200: 'Stock price list fetched successfully'}
-    )
+  @swagger_auto_schema(**STOCK_LIST_RESPONSE)
   def get(self, request):
     stock_list = StockAccessor().get_stock_price()
     return ResponseBuilder().ok_200().result_object(stock_list).get_response()
-
+    
+         
 class StockTrackingView(APIView):
   permission_classes = [IsAuthenticated]
 

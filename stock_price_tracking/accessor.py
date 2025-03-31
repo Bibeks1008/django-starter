@@ -1,6 +1,9 @@
 from django.core.cache import cache
 import json
 import yfinance as yf
+import logging
+
+logger = logging.getLogger(__name__)
 
 class StockAccessor:
 
@@ -13,7 +16,7 @@ class StockAccessor:
 
     if cached_data:
       stock_data = json.loads(cached_data)
-      print("data from cache =====> ",stock_data)
+      logger.info(f"data from cache =====> {stock_data}")
     else:
       for symbol in stock_symbols:
         try:
@@ -22,7 +25,7 @@ class StockAccessor:
             stock_price = stock.history(period="1d")['Close'].iloc[-1]
             stock_data[symbol] = stock_price
         except Exception as e:
-            print(f"Error fetching data for {symbol}: {e}")
+            logger.error(f"Error fetching data for {symbol}: {e}")
             stock_data[symbol] = None
 
       cache.set("stock_data", json.dumps(stock_data),900)

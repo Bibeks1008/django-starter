@@ -1,6 +1,7 @@
 from .models import StockTracking
 from .serializers import StockTrackingSerializer
 
+from shared.helpers.logging_helper import logger
 
 class StockTrackingService:
     @staticmethod
@@ -9,12 +10,12 @@ class StockTrackingService:
         serializer = StockTrackingSerializer(data=data, context={'user': user})
         if serializer.is_valid():
             stock_tracking = serializer.save()
-            return stock_tracking, None
+            return stock_tracking, {}
         else:
-            return None, serializer.errors
+            return {}, serializer.errors
       except Exception as e:
-        print(f"Unexpected error during stock tracking creation: {e}")
-        return None, {"non_field_errors": ["An unexpected error occurred."]}
+        logger.error(f"Unexpected error during stock tracking creation: {e}")
+        return {}, {"non_field_errors": ["An unexpected error occurred."]}
 
     @staticmethod
     def get_stock_tracked(user):
