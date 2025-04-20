@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework_simplejwt',
     'django_extensions',
+    
+    'user.apps.UserConfig',
+    'stock_price_tracking.apps.StockPriceTrackingConfig',
+    'django_crontab',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -93,9 +97,10 @@ if 'test' in sys.argv or 'test_coverage' in sys.argv:
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.environ.get('REDIS_URL', default='redis://localhost:6379/0'),
+        "LOCATION": os.environ.get('REDIS_URL', default='redis://127.0.0.1:6379/1'),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            'PASSWORD': '123',
         }
     }
 }
@@ -151,7 +156,8 @@ REST_FRAMEWORK = {
     ],
     'EXCEPTION_HANDLER': 'ramailo.error_handling.custom_exception_handler',
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTStatelessUserAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTStatelessUserAuthentication',
+         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
 
@@ -159,7 +165,7 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=15),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
     "ALGORITHM": "HS512",
-    'SIGNING_KEY': os.environ.get("JWT_SIGNING_KEY"),
+    'SIGNING_KEY': os.environ.get("JWT_SIGNING_KEY", "secret-key"),
     'AUTH_HEADER_TYPES': ("Bearer",),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': False,
@@ -170,8 +176,13 @@ SIMPLE_JWT = {
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
-        'basic': {
-            'type': 'basic'
+        # 'basic': {
+        #     'type': 'basic'
+        # },
+        'api_key': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization'
         }
     },
     'USE_SESSION_AUTH': False
@@ -259,6 +270,13 @@ LOGGING = {
             'propagate': True,
         },
 
+        'stock_price_tracking': {  # Adjust this to your app's name
+            'handlers': ['file'],
+            'level': 'DEBUG',  # You can adjust the log level here as well
+            'propagate': True,
+        },
+
+
         #database query logger
         # 'django.db.backends': {
         #     'level': 'DEBUG',
@@ -295,7 +313,7 @@ AWS_DEFAULT_ACL = None
 AWS_S3_VERIFY = True
 
 # aws ses
-EMAIL_BACKEND = 'django_ses.SESBackend'
+# EMAIL_BACKEND = 'django_ses.SESBackend'
 AWS_SES_REGION_NAME = os.environ.get("AWS_SES_REGION_NAME")
 AWS_SES_EMAIL = os.environ.get("AWS_SES_EMAIL")
 
@@ -307,3 +325,28 @@ TESTERS = ["9975319000", "8864208000"]
 
 # Name matching threshold
 NAME_MATCH_THRESHOLD = 70.0
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.gmail.com'  # For Gmail
+EMAIL_PORT = 587  # TLS port
+EMAIL_USE_TLS = True  # Use TLS (recommended for security)
+
+# Authentication details
+EMAIL_HOST_USER = 'dreamhigh.bibek@gmail.com'  # Replace with your Gmail address
+EMAIL_HOST_PASSWORD = "fets uwjm sint angi" # Replace with your Gmail password (or app password)
+
+# Default "From" address
+DEFAULT_FROM_EMAIL = 'dreamhigh.bibek@gmail.com' 
+
+
+
+
+CRONJOBS = [
+    ('*/15 * * * *', 'stock_price_tracking.management.commands.fetch_stock_prices'),
+]
+# CRONJOBS = [
+#     ('*/1 * * * *', 'source /Users/bibek/Desktop/work/django-starter/venv/bin/activate && export DJANGO_SETTINGS_MODULE=django_starter.settings && /Users/bibek/Desktop/work/django-starter/venv/bin/python /Users/bibek/Desktop/work/django-starter/manage.py fetch_stock_prices >> /Users/bibek/Desktop/work/django-starter/logs.log 2>&1'),
+# ]
+
